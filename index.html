@@ -2,11 +2,16 @@
 <html>
 
 <head>
+  <!--"A <meta> viewport element gives the browser instructions on how to control the page's dimensions and scaling."
+   see https://www.w3schools.com/css/css_rwd_viewport.asp (this is also suggested by Alexandro Perez)-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
 
   <!--Alexandro Perez suggested using completely different stylesheets based on screen size
   I like this approach over adding different checks throughout the single styles.css file
-  This article from Microsoft had some recommendations for break points for different screen sizes: https://docs.microsoft.com/en-us/windows/uwp/design/layout/screen-sizes-and-breakpoints-for-responsive-design
+  This article from Microsoft had some recommendations for break points for different screen sizes:
+  https://docs.microsoft.com/en-us/windows/uwp/design/layout/screen-sizes-and-breakpoints-for-responsive-design
   Small (smaller than 640px), default*/-->
   <link rel="stylesheet" href="css/styles.css">
   <!--Medium (641px to 1007px)-->
