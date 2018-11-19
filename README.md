@@ -22,11 +22,16 @@ In a terminal, check the version of Python you have: `python -V`. If you have Py
 
 ## Leaflet.js and Mapbox:
 
-This repository uses [leafletjs](https://leafletjs.com/) with [Mapbox](https://www.mapbox.com/). You need to replace `<your MAPBOX API KEY HERE>` with a token from [Mapbox](https://www.mapbox.com/). Mapbox is free to use, and does not require any payment information. 
+This repository uses [leafletjs](https://leafletjs.com/) with [Mapbox](https://www.mapbox.com/). You need to replace `<your MAPBOX API KEY HERE>` with a token from [Mapbox](https://www.mapbox.com/). Mapbox is free to use, and does not require any payment information.
 
 ### Note about ES6
 
 Most of the code in this project has been written to the ES6 JavaScript specification for compatibility with modern web browsers and future proofing JavaScript code. As much as possible, try to maintain use of ES6 in any additional JavaScript you write. 
 
+Code Attributions:
+I will do my best to cite my sources.
+I am following walkthroughs to complete this project and will list the walkthroughs here as well as attribute code as best I can.
+1. Alexandro Perez, https://alexandroperez.github.io/mws-walkthrough/
+2. Doug Brown, https://www.youtube.com/watch?v=92dtrNU1GQc
 
 
