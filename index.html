@@ -3,7 +3,17 @@
 
 <head>
   <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+
+  <!--Alexandro Perez suggested using completely different stylesheets based on screen size
+  I like this approach over adding different checks throughout the single styles.css file
+  This article from Microsoft had some recommendations for break points for different screen sizes: https://docs.microsoft.com/en-us/windows/uwp/design/layout/screen-sizes-and-breakpoints-for-responsive-design
+  Small (smaller than 640px), default*/-->
   <link rel="stylesheet" href="css/styles.css">
+  <!--Medium (641px to 1007px)-->
+  <link rel="stylesheet" media="screen and (min-width: 641px)" href="css/styles_medium.css">
+  <!--Large (1008px and larger)-->
+  <link rel="stylesheet" media="screen and (min-width: 1008px)" href="css/styles_large.css">
+
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin=""/>
   <title>Restaurant Reviews</title>
 </head>
