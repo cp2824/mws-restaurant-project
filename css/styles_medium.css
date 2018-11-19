@@ -1,0 +1,21 @@
+/* ====================== Restaurant Filtering ====================== */
+.filter-options {
+    justify-content: center;
+}
+.filter-options select {
+    width: 200px;
+}
+/* ====================== Restaurant Listing ====================== */
+#restaurants-list {
+    /**lets there be multiple restaurants in one line, need wrap for multiple lines**/
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+#restaurants-list li {
+    margin: 2.5% 1.25% 0% 1.25%;
+    width: 37%;
+}
+#footer {
+    margin: 2.5% 0 0 0;
+}

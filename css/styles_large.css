@@ -1,0 +1,10 @@
+/* ====================== Map ====================== */
+#map {
+    /**I thought this looked weird when it got too wide**/
+    width: 1008px;
+    /**TODO: Center**/
+}
+/* ====================== Restaurant Listing ====================== */
+#restaurants-list li {
+    width: 240px;
+}
