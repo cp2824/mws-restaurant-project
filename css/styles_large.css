@@ -1,10 +1,60 @@
-/* ====================== Map ====================== */
-#map {
-    /**I thought this looked weird when it got too wide**/
-    width: 1008px;
-    /**TODO: Center**/
+#maincontent {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
+#reviews-container h2 {
+    width: 100%;
+    text-align: center;
+}
+/* ====================== Map ====================== */
+
 /* ====================== Restaurant Listing ====================== */
+.filter-options {
+    height: 55px;
+}
+#map-container {
+    width: 100%;
+}
 #restaurants-list li {
     width: 240px;
+}
+/* ====================== Restaurant Details ====================== */
+.inside header {
+    position: static;
+}
+#breadcrumb {
+    width: 100%;
+}
+.inside #map-container {
+    background: blue none repeat scroll 0 0;
+    height: 600px;
+    position: static;
+    right: 0;
+    top: 80px;
+    width: 50%;
+    order: 2;
+}
+#restaurant-container {
+    padding: 10px 40px 30px;
+    width: calc(50% - 80px);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+#restaurant-img {
+    max-width: 374px;
+    max-height: 280px;
+}
+#reviews-container {
+    order: 3;
+    width: 100%;
+}
+#reviews-list li {
+    width: 350px;
+    margin: 30px
+}
+
+.inside #footer {
+    width: 100%;
 }
