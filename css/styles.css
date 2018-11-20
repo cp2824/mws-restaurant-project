@@ -69,6 +69,7 @@ nav h1 a {
   font-weight: 200;
   letter-spacing: 10px;
   text-transform: uppercase;
+  padding: 20px;
 }
 #breadcrumb {
     padding: 10px 40px 16px;
@@ -146,6 +147,8 @@ nav h1 a {
   list-style: outside none none;
   margin: 0px;
   padding: 0px;
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
 }
 #restaurants-list li {
