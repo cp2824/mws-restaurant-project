@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <!-- Normalize.css for better cross-browser consistency -->
@@ -30,13 +30,15 @@ Small (smaller than 640px), default*/-->
     <!-- Beginning nav -->
     <nav>
       <!-- Alexandro suggested adding a skip-link to go straight to main content -->
+      <!-- skip-links allow a user to get to relevant content more quickly using a keyboard -->
       <a href="#restaurant-name" class="skip-link">Skip to main content</a>
       <h1><a href="/">Restaurant Reviews</a></h1>
     </nav>
     <!-- Beginning breadcrumb -->
-    <ul id="breadcrumb" >
+    <!-- note aria settings for improved accessibility -->
+    <ol id="breadcrumb" area-label="Breadcrumb">
       <li><a href="/">Home</a></li>
-    </ul>
+    </ol>
     <!-- End breadcrumb -->
     <!-- End nav -->
   </header>
@@ -45,12 +47,14 @@ Small (smaller than 640px), default*/-->
   <!-- Beginning main -->
   <main id="maincontent">
     <!-- Beginning map -->
-    <section id="map-container">
-      <div id="map"></div>
+    <!-- note aria settings for improved accessibility -->
+    <section id="map-container" role="application" aria-label="Map">
+      <div id="map" aria-labelledby="map-container"></div>
     </section>
     <!-- End map -->
     <!-- Beginning restaurant -->
-    <section id="restaurant-container">
+    <!-- note aria settings for improved accessibility -->
+    <section id="restaurant-container" role="region" aria-label="Restaurant Info">
       <h1 id="restaurant-name"></h1>
       <img id="restaurant-img">
       <p id="restaurant-cuisine"></p>
@@ -59,7 +63,8 @@ Small (smaller than 640px), default*/-->
     </section>
     <!-- end restaurant -->
     <!-- Beginning reviews -->
-    <section id="reviews-container">
+    <!-- note aria settings for improved accessibility -->
+    <section id="reviews-container" role="region" aria-label="Reviews">
       <ul id="reviews-list"></ul>
     </section>
     <!-- End reviews -->
