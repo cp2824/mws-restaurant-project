@@ -148,11 +148,39 @@ class DBHelper {
   }
 
   /**
-   * Restaurant image URL.
+   * Restaurant image URL.  This returns a medium size image by default.
+   * Restaurant ID is returned if the image URL is missing.
+   * This approach was suggested in Alexandro Perez's walkthrough.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+    let image = `/img/${(restaurant.photograph.split('.')[0]||restaurant.id)}-medium.jpg`;
+    return image;
   }
+
+  /**
+   * This returns image srcset attribute to allow the browser to decide on the best resolution.
+   * (this is reporting image pixel widths)
+   * Restaurant ID is returned if the image source is missing.
+   * This approach was suggested in Alexandro Perez's walkthrough.
+   */
+  static imageSrcset(restaurant) {
+      const imageSrc = `/img/${(restaurant.photograph.split('.')[0]||restaurant.id)}`;
+      return `${imageSrc}-small.jpg 300w,
+          ${imageSrc}-medium.jpg 600w,
+          ${imageSrc}-large.jpg 800w`;
+  }
+
+  /**
+   * This returns image sizes attribute so that the browser knows image sizes
+   * before choosing an image to download.
+   * (Currently setting limits to match stylesheet ranges, not sure if that's right).
+   * This approach was suggested in Alexandro Perez's walkthrough.
+   */
+  static imageSizes(restaurant) {
+      return `(max-width: 640px) 560px,
+          (max-width: 1007px) 375px,
+          375px`;
+    }
 
   /**
    * Map marker for a restaurant.
