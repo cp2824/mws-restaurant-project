@@ -173,7 +173,7 @@ class DBHelper {
   /**
    * This returns image sizes attribute so that the browser knows image sizes
    * before choosing an image to download.
-   * (Currently setting limits to match stylesheet ranges, not sure if that's right).
+   * (Currently setting limits to match stylesheet ranges).
    * This approach was suggested in Alexandro Perez's walkthrough.
    */
   static imageSizes(restaurant) {

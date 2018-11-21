@@ -23,7 +23,16 @@ a {
 }
 a:hover, a:focus {
 	color: #3397db;
+    background-color: orangered;
 	text-decoration: none;
+}
+#restaurants-list li a:hover, #restaurants-list li a:focus {
+  color: #3397db;
+  background-color: orangered;
+}
+.filter-options select:hover, .filter-options select:focus{
+  color: #3397db;
+  background-color: orangered;
 }
 a img{
 	border: none 0px #fff;
@@ -297,4 +306,15 @@ nav h1 a {
 }
 #restaurant-hours td {
   color: #666;
+}
+
+/* skip-link suggested by Alexandro */
+.skip-link {
+  position: absolute;
+  top: 25px;
+  left: -1000px;
+  padding: 5px 10px;
+}
+.skip-link:focus {
+  left: 15px;
 }
