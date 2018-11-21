@@ -12,29 +12,41 @@ document.addEventListener('DOMContentLoaded', (event) => {
  * Initialize leaflet map
  */
 initMap = () => {
-  fetchRestaurantFromURL((error, restaurant) => {
-    if (error) { // Got an error!
-      console.error(error);
-    } else {      
-      self.newMap = L.map('map', {
-        center: [restaurant.latlng.lat, restaurant.latlng.lng],
-        zoom: 16,
-        scrollWheelZoom: false
-      });
-      L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
-        mapboxToken: 'pk.eyJ1IjoiY3BlcnJ5IiwiYSI6ImNqazQybW5zbjB0dWYzcXFxdjdjOHc1YnIifQ.My45l4j0D-9hsT7pkOwPbg',
-        maxZoom: 18,
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-          '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-          'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        id: 'mapbox.streets'    
-      }).addTo(newMap);
-      fillBreadcrumb();
-      DBHelper.mapMarkerForRestaurant(self.restaurant, self.newMap);
+    fetchRestaurantFromURL((error, restaurant) => {
+        if (error) { // Got an error!
+            console.error(error);
+        } else {
+            /** Use both navigator.onLine and try...catch to prevent errors from happening when trying to load Mapbox
+             * This approach was suggested in Alexandro's walkthrough
+             * We only attempt to initialize if we're online
+             * Catching other errors allows us to log the error without stopping execution
+             */
+            if (navigator.onLine) {
+        try {
+            self.newMap = L.map('map', {
+                center: [restaurant.latlng.lat, restaurant.latlng.lng],
+                zoom: 16,
+                scrollWheelZoom: false
+            });
+            L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
+                mapboxToken: 'pk.eyJ1IjoiY3BlcnJ5IiwiYSI6ImNqazQybW5zbjB0dWYzcXFxdjdjOHc1YnIifQ.My45l4j0D-9hsT7pkOwPbg',
+                maxZoom: 18,
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+                '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                id: 'mapbox.streets'
+            }).addTo(newMap);
+            DBHelper.mapMarkerForRestaurant(self.restaurant, self.newMap);
+        } catch(error) {
+            console.log("Map couldn't be initialized", error);
+        }
     }
-  });
-}  
- 
+    fillBreadcrumb();
+    DBHelper.mapMarkerForRestaurant(self.restaurant, self.newMap);
+}
+});
+}
+
 /* window.initMap = () => {
   fetchRestaurantFromURL((error, restaurant) => {
     if (error) { // Got an error!
