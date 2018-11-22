@@ -206,5 +206,17 @@ class DBHelper {
     return marker;
   } */
 
+    /**
+     * This function is used to set the map content to something useful when offline
+     * Adding this function was suggested in Alexandro Perez's walkthrough
+     */
+    static mapOffline() {
+        const map = document.getElementById('map');
+        map.className = "map-offline";
+        map.innerHTML = `<div class="map-heading">Did You Need This Map?</div>
+    <div class="map-text">Maps appear to be offline. Please confirm you are connected to the internet or check back later.</div>`;
+    }
+
 }
+
 

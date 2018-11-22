@@ -94,7 +94,12 @@ initMap = () => {
             }).addTo(newMap);
         } catch(error) {
             console.log("Map couldn't be initialized", error);
+            // Set map as offline when we catch and error (to display something meaningful)
+            DBHelper.mapOffline();
         }
+    } else {
+        // Set map as offline if the navigator is not online (to display something meaningful)
+        DBHelper.mapOffline();
     }
     updateRestaurants();
 }

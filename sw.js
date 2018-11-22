@@ -1,6 +1,7 @@
 // Code here for service worker largely comes from https://developers.google.com/web/fundamentals/primers/service-workers/
 // I also used suggestions from Alexandro's walkthrough
 
+// Alexandro suggested scoping as 'const' for these, but they have worked well enough scoped as 'var'
 var appName = "mws-restaurant-project"
 var CACHE_NAME = appName + "-v1.1";
 var IMG_CACHE_NAME = appName + "images";
@@ -42,9 +43,6 @@ self.addEventListener('install', function(event) {
  * will be killed and the new service worker will take control.
  * Once the new service worker takes control, its activate event will be fired.*/
 self.addEventListener('activate', function(event) {
-    //not currently using a Whitelist (working off the current cacheName)
-    //only deletes caches with the
-    //var cacheWhitelist = ['pages-cache-v1', 'blog-posts-cache-v1'];
     event.waitUntil(
         caches.keys().then(function(cacheNames) {
             return Promise.all(
@@ -52,33 +50,64 @@ self.addEventListener('activate', function(event) {
                     return cacheName.startsWith(appName) &&
                         !allCaches.includes(cacheName);
                 }).map(function(cacheName) {
-                    //if (cacheWhitelist.indexOf(cacheName) === -1) {
                     return caches.delete(cacheName);
-                    //}
                 })
             );
         })
     );
 });
 
-/** Using code from offline cookbook:
- * https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook/
+/**
+ * Receive fetch requests and send cached data when we can.
  * If a request doesn't match anything in the cache, get it from the network,
  * send it to the page & add it to the cache at the same time.
- * If there's a cached version available, use it, but fetch an update for next time.
- * Making this more like Alexandro's code from his walkthrough in an attempt to troublshoot
- * some issues.*/
+ **/
 self.addEventListener('fetch', function(event) {
+    const requestUrl = new URL(event.request.url);
+
+    // do not highjack request made from mapbox maps, leaflet, or others outside our application
+    if (requestUrl.origin === location.origin) {
+
+        // Strip search params from requests made to restaurant.html
+        // respondWith restaurant.html if pathname startsWith '/restaurant.html'
+        if (requestUrl.pathname.startsWith('/restaurant.html')) {
+            event.respondWith(caches.match('/restaurant.html'));
+            return; // If the request was for restaurant.html we are done handling request. Exit early.
+        }
+
+        // We created a new function to strip image requests down to the base image
+        if (requestUrl.pathname.startsWith('/img')) {
+            event.respondWith(serveImage(event.request));
+            return; // If the request was for an image we are done handling request. Exit early.
+        }
+    }
+
+    // By default, respond with cached elements. Fall back to network for uncached elements.
     event.respondWith(
-        /**caches.open(IMG_CACHE_NAME).then(function(cache) {
-            return cache.match(event.request).then(function(response) {
-                var fetchPromise = fetch(event.request).then(function(networkResponse) {
-                    cache.put(event.request, networkResponse.clone());
-                    return networkResponse;
-                })**/
-            caches.match(event.request).then(function(response) {
-                return response || fetchPromise;
-            //})
+        caches.match(event.request).then(function(response) {
+            return response || fetch(event.request);
         })
     );
 });
+
+/**
+ * This function strip images requests down to the base image name (removing -small, -medium, or -large)
+ * The stripped name is used for the cache (so that we can always use the first image we stored regardless of size)
+ */
+function serveImage(request) {
+    //we need to store the string down to manipulate it
+    let imageStorageUrl = request.url;
+    //stripping out the -size
+    imageStorageUrl = imageStorageUrl.replace(/-small\.\w{3}|-medium\.\w{3}|-large\.\w{3}/i, '');
+
+    return caches.open(IMG_CACHE_NAME).then(function(cache) {
+        return cache.match(imageStorageUrl).then(function(response) {
+            // returns the image from the cache (if it can).
+            // If not it fetches from network, caches a clone, then returns the network response
+            return response || fetch(request).then(function(networkResponse) {
+                cache.put(imageStorageUrl, networkResponse.clone());
+                return networkResponse;
+            });
+        });
+    });
+}

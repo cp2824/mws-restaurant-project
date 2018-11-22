@@ -16,12 +16,13 @@ initMap = () => {
         if (error) { // Got an error!
             console.error(error);
         } else {
-            /** Use both navigator.onLine and try...catch to prevent errors from happening when trying to load Mapbox
+            /**
+             * Use both navigator.onLine and try...catch to prevent errors from happening when trying to load Mapbox
              * This approach was suggested in Alexandro's walkthrough
              * We only attempt to initialize if we're online
              * Catching other errors allows us to log the error without stopping execution
              */
-            if (navigator.onLine) {
+        if (navigator.onLine) {
         try {
             self.newMap = L.map('map', {
                 center: [restaurant.latlng.lat, restaurant.latlng.lng],
@@ -39,7 +40,12 @@ initMap = () => {
             DBHelper.mapMarkerForRestaurant(self.restaurant, self.newMap);
         } catch(error) {
             console.log("Map couldn't be initialized", error);
+            // Set map as offline when we catch an error (to display something meaningful)
+            DBHelper.mapOffline();
         }
+    } else {
+        // Set map as offline if the navigator is not online (to display something meaningful)
+        DBHelper.mapOffline();
     }
     fillBreadcrumb();
     DBHelper.mapMarkerForRestaurant(self.restaurant, self.newMap);
