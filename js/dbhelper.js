@@ -145,6 +145,7 @@ class DBHelper {
   static urlForRestaurant(restaurant) {
       /*the .html was breaking the details page*/
       return (`/restaurant?id=${restaurant.id}`);
+      //return (`./restaurant.html?id=${restaurant.id}`);
   }
 
   /**
