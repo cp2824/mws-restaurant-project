@@ -1,4 +1,6 @@
 // This file was suggested in Alexandro Perez's walkthrough.
+// Use of these calls is well documented there, but I've made sure to add notes about my understanding of the code.
+// chages tied to this code also exist in dbhelper functions that call these functions
 
 const dbPromise = {
     db: idb.open('mws-restaurant-project-db', 1, function(upgradeDb) {

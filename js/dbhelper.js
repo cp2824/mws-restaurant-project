@@ -33,17 +33,39 @@ class DBHelper {
           const restaurants = JSON.parse(xhr.responseText); //we are only getting an array now
           dbPromise.putRestaurants(restaurants); //store all restaurants into idb
           callback(null, restaurants);
-      }  else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
+      } else { // Oops!. Got an error from server.
+          console.log(`Request failed. Returned status of ${xhr.status}, trying idb...`);
+          // if xhr request isn't code 200 (need xhr on error (below) to handle when the server is down), try idb
+          dbPromise.getRestaurants().then(idbRestaurants => {
+              // if we get back more than 1 restaurant from idb, return idbRestaurants (can be 0 to many)
+              if (idbRestaurants.length > 0) {
+                  callback(null, idbRestaurants)
+              } else { // if we got back 0 restaurants return an error - nothing has been saved to index db yet
+                  callback('No restaurants found in idb', null);
+              }
+          });
       }
     };
+      // XHR needs error handling for when server is down (doesn't respond or sends back codes) (ex, connection refused)
+      // this extra error handling isn't necessary when we aren't using XHR (see below in fetchRestaurantById)
+      xhr.onerror = () => {
+          console.log('Error while trying XHR, trying idb...');
+          // try idb, and if we get restaurants back, return them, otherwise return an error
+          // same thing as above, only send them if we have 1 or more
+          dbPromise.getRestaurants().then(idbRestaurants => {
+              if (idbRestaurants.length > 0) {
+                  callback(null, idbRestaurants)
+              } else { // if we got back 0 restaurants return an error - nothing has been saved to index db yet
+                  callback('No restaurants found in idb', null);
+              }
+          });
+      }
     xhr.send();
   }
 
   /**
    * Fetch a restaurant by its ID.
-   * Alexandro Perez recommended updating this code significantly to improve efficiency
+   * Alexandro Perez recommended updating this code significantly to improve efficiency (only ask for 1 if you need 1)
    */
   static fetchRestaurantById(id, callback) {
       // fetch only the restaurant that we are using (by id)
@@ -51,15 +73,21 @@ class DBHelper {
       // why use xhr when you can fetch a promise?  Asynchronous responses improve performance
       fetch(`${DBHelper.API_URL}/restaurants/${id}`).then(response => {
           // if the response is not ok, will be caught below
+          // response.ok handles much of the error checking we had to do manually with xhr above
           if (!response.ok) return Promise.reject("Restaurant couldn't be fetched from network");
           // returns with a response if it is ok
           return response.json();
       }).then(fetchedRestaurant => {  //waits for the promise to be resolved, we need the callback after the resolved promise
           // if restaurant could be fetched from the network return the restaurant:
+          dbPromise.putRestaurants(fetchedRestaurant); // put the restaurant into our db (just the one we fetched)
           return callback(null, fetchedRestaurant);  // we need the callback to wait for the response
-      }).catch(networkError => {
+      }).catch(networkError => { // catches any error we receive as well as issues tied to not connecting to the server
           // if restaurant couldn't be fetched from the network return the error:
-          return callback(networkError, null);
+          console.log(`${networkError}, trying idb.`);
+          dbPromise.getRestaurants(id).then(idbRestaurant => { //still try getting the data from idb
+              if (!idbRestaurant) return callback("Restaurant not found in idb either", null); // if it's not in the idb all we can send is the error
+              return callback(null, idbRestaurant); // we still return the data from idb (if it exists) when we get errors or the server is down
+          });
       });
   }
 
