@@ -1,6 +1,4 @@
 // This file was suggested in Alexandro Perez's walkthrough.
-// TODO: Fix dbPromise database stuff
-//import idb from 'idb';
 
 const dbPromise = {
     db: idb.open('mws-restaurant-project-db', 1, function(upgradeDb) {
@@ -57,6 +55,3 @@ const dbPromise = {
     },
 
 };
-
-// don't forget the export
-export default dbPromise;
