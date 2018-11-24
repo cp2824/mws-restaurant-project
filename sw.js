@@ -3,7 +3,7 @@
 
 // Alexandro suggested scoping as 'const' for these, but they have worked well enough scoped as 'var'
 var appName = "mws-restaurant-project"
-var CACHE_NAME = appName + "-v1.2";
+var CACHE_NAME = appName + "-v2.0";
 var IMG_CACHE_NAME = appName + "images";
 var allCaches = [
     CACHE_NAME,
@@ -15,13 +15,23 @@ var urlsToCache = [
     '/css/styles.css',
     '/css/styles_large.css',
     '/css/styles_medium.css',
-    '/data/restaurants.json',
-    // note, no images or img in this list of URLs
+    //'/data/restaurants.json', //this is gone with stage 2
+    '/images/icons/icon-72x72.png',
+    '/images/icons/icon-96x96.png',
+    '/images/icons/icon-128x128.png',
+    '/images/icons/icon-144x144.png',
+    '/images/icons/icon-152x152.png',
+    '/images/icons/icon-192x192.png',
+    '/images/icons/icon-384x384.png',
+    '/images/icons/icon-512x512.png',
     '/js/dbhelper.js',
+    '/js/dbpromise.js',
+    '/js/idb.js',
     '/js/main.js',
     '/js/register-sw.js',
     '/js/restaurant_info.js',
     // note, no node_modules in this list of URLs
+    '/manifest.json',
     '/restaurant.html'
 ];
 

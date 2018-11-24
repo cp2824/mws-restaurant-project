@@ -17,7 +17,9 @@ const dbPromise = {
      * can take an array of restaurants or a single restaurant
      */
     putRestaurants(restaurants) {
+        // if restaurants isn't an array then convert it into one
         if (!restaurants.push) restaurants = [restaurants];
+        // this is the database we initialized above
         return this.db.then(db => {
             // specify a read/write transaction for restaurants
             const store = db.transaction('restaurants', 'readwrite').objectStore('restaurants');
@@ -49,9 +51,9 @@ const dbPromise = {
         return this.db.then(db => {
             // we are reading (that's the default), not read/write
             const store = db.transaction('restaurants').objectStore('restaurants');
-        // if there is an id (convert a string to number)
+        // if there is an id (convert a string to number). We return a restaurant by that id.
         if (id) return store.get(Number(id));
-        // if there is no id
+        // if there is no id we return all restaurants in our database
         return store.getAll();
     });
     },

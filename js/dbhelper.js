@@ -29,15 +29,15 @@ class DBHelper {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', `${DBHelper.API_URL}/restaurants`);
     xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-          const restaurants = JSON.parse(xhr.responseText); //we are only getting an array now
-          dbPromise.putRestaurants(restaurants); //store all restaurants into idb
-          callback(null, restaurants);
+      if (xhr.status === 200) { // 200 means we got a success response from the server
+          const restaurants = JSON.parse(xhr.responseText); //we are only getting an array now (starting in project 2)
+          dbPromise.putRestaurants(restaurants); //store all restaurants into our database
+          callback(null, restaurants); // return no error and the restaurants
       } else { // Oops!. Got an error from server.
           console.log(`Request failed. Returned status of ${xhr.status}, trying idb...`);
-          // if xhr request isn't code 200 (need xhr on error (below) to handle when the server is down), try idb
+          // if xhr request isn't code 200 (need xhr on error (below) to handle when the server is down), see if it's in our database
           dbPromise.getRestaurants().then(idbRestaurants => {
-              // if we get back more than 1 restaurant from idb, return idbRestaurants (can be 0 to many)
+              // if we get back more than 1 restaurant from our database, return idbRestaurants (can be 1 to many)
               if (idbRestaurants.length > 0) {
                   callback(null, idbRestaurants)
               } else { // if we got back 0 restaurants return an error - nothing has been saved to index db yet
