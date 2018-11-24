@@ -1,3 +1,5 @@
+//import DBHelper from './dbhelper';
+
 let restaurants,
   neighborhoods,
   cuisines

@@ -1,11 +1,23 @@
+//import dbPromise from './dbpromise';
+
 /**
  * Common database helper functions.
  */
 class DBHelper {
 
+    /**
+     * API URL
+     * (Procedure suggested by Alexandro Perez to fetch data from sails API server)
+     *   Return URL to access sails server without suffixing the restaurant's endpoint (make it universal)
+     */
+  static get API_URL() {
+    const port = 1337; // Sails server url port
+    return `http://localhost:${port}`;
+    }
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
+   * ****Deprecated****
    */
   static get DATABASE_URL() {
     const port = 8000 // Change this to your server port
@@ -17,11 +29,12 @@ class DBHelper {
    */
   static fetchRestaurants(callback) {
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
+    xhr.open('GET', `${DBHelper.API_URL}/restaurants`);
     xhr.onload = () => {
       if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
+        const restaurants = JSON.parse(xhr.responseText); //we are only getting an array now
+        // TODO: Fix dbPromise database stuff
+        //dbPromise.putRestaurants(restaurants);// store the restaurants in the db
         callback(null, restaurants);
       } else { // Oops!. Got an error from server.
         const error = (`Request failed. Returned status of ${xhr.status}`);
@@ -33,21 +46,24 @@ class DBHelper {
 
   /**
    * Fetch a restaurant by its ID.
+   * Alexandro Perez recommended updating this code significantly to improve efficiency
    */
   static fetchRestaurantById(id, callback) {
-    // fetch all restaurants with proper error handling.
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
-        callback(error, null);
-      } else {
-        const restaurant = restaurants.find(r => r.id == id);
-        if (restaurant) { // Got the restaurant
-          callback(null, restaurant);
-        } else { // Restaurant does not exist in the database
-          callback('Restaurant does not exist', null);
-        }
-      }
-    });
+      // fetch only the restaurant that we are using (by id)
+      // Note that fetching ALL restaurants when you only need one is very inefficient
+      // why use xhr when you can fetch a promise?  Asynchronous responses improve performance
+      fetch(`${DBHelper.API_URL}/restaurants/${id}`).then(response => {
+          // if the response is not ok, will be caught below
+          if (!response.ok) return Promise.reject("Restaurant couldn't be fetched from network");
+          // returns with a response if it is ok
+          return response.json();
+      }).then(fetchedRestaurant => {  //waits for the promise to be resolved, we need the callback after the resolved promise
+          // if restaurant could be fetched from the network return the restaurant:
+          return callback(null, fetchedRestaurant);  // we need the callback to wait for the response
+      }).catch(networkError => {
+          // if restaurant couldn't be fetched from the network return the error:
+          return callback(networkError, null);
+      });
   }
 
   /**
@@ -154,7 +170,9 @@ class DBHelper {
    * This approach was suggested in Alexandro Perez's walkthrough.
    */
   static imageUrlForRestaurant(restaurant) {
-    let image = `/img/${(restaurant.photograph.split('.')[0]||restaurant.id)}-medium.jpg`;
+    // we no longer need the split because we are only getting a number back (ie '10' instead of '10.jpg')
+    // this helps handle when the image is missing from the API (workaround for when APIs have problems)
+    let image = `/img/${(restaurant.photograph||restaurant.id)}-medium.jpg`;
     return image;
   }
 
@@ -165,7 +183,9 @@ class DBHelper {
    * This approach was suggested in Alexandro Perez's walkthrough.
    */
   static imageSrcset(restaurant) {
-      const imageSrc = `/img/${(restaurant.photograph.split('.')[0]||restaurant.id)}`;
+      // we no longer need the split because we are only getting a number back (ie '10' instead of '10.jpg')
+      // this helps handle when the image is missing from the API (workaround for when APIs have problems)
+      const imageSrc = `/img/${(restaurant.photograph||restaurant.id)}`;
       return `${imageSrc}-small.jpg 300w,
           ${imageSrc}-medium.jpg 600w,
           ${imageSrc}-large.jpg 800w`;
