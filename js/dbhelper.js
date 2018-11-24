@@ -38,7 +38,7 @@ class DBHelper {
     // A separate dbpromise file was suggested in Alexandro Perez's walkthrough, but I would rather put the database here.
     /******Start of code from dbpromise.js (also included openDB code above) ********/
     static iniitializeDB () {
-    this.db = openDB()
+    this.dbp = openDB()
 
   }
     /**
@@ -47,7 +47,7 @@ class DBHelper {
      */
     static putRestaurants(restaurants) {
         if (!restaurants.push) restaurants = [restaurants];
-        return this.dbp.then((db) => {
+        return this.dbp.then(db => {
             // specify a read/write transaction for restaurants
             const store = db.transaction('restaurants', 'readwrite').objectStore('restaurants');
             // resolves only if the array of promises resolves
