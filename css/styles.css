@@ -340,3 +340,16 @@ nav h1 a {
   font-size: 2vmax;
   color: #166092;
 }
+/* Default button style when not toggled */
+button.fav {
+
+}
+/* Button style when button is toggled */
+button.fav[aria-pressed=true] {
+
+}
+/* Accessible and easy to spot styles for our buttons when hovered and focused */
+button.fav:hover,
+button.fav:focus {
+
+}

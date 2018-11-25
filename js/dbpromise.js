@@ -19,6 +19,7 @@ const dbPromise = {
     /**
      * Save a restaurant or array of restaurants into idb, using promises.
      * can take an array of restaurants or a single restaurant
+     * forceUpdate boolean will allow us to update data forcibly
      */
     putRestaurants(restaurants) {
         // if restaurants isn't an array then convert it into one
@@ -32,10 +33,12 @@ const dbPromise = {
                 // returns this promise on each element of the array
                 // if we get a resataurant back from index db then it was already saved
                 return store.get(networkRestaurant.id).then(idbRestaurant => {
+                    if (forceUpdate) return store.put(networkRestaurant); //use our new boolean to force an update
                     // if it doesn't already exist in db then restaurant is undefined
                     // (works as a short circuit conditional statement)
                     // or if we get newly updated restaurant information (don't update with old info)
-                    if (!idbRestaurant || networkRestaurant.updatedAt > idbRestaurant.updatedAt) {
+                    // Update here - handles ISO dates by default (rather than just timestamps)
+                    if (!idbRestaurant || new Date(networkRestaurant.updatedAt) > new Date(idbRestaurant.updatedAt)) {
                         // go ahead and store the restaurant in idb
                         return store.put(networkRestaurant);
                     }
@@ -80,7 +83,8 @@ const dbPromise = {
                     // if it doesn't already exist in db then review is undefined
                     // (works as a short circuit conditional statement)
                     // or if we get newly updated review information (don't update with old info)
-                    if (!idbReview || networkReview.updatedAt > idbReview.updatedAt) {
+                    // Update here - handles ISO dates by default (rather than just timestamps)
+                    if (!idbReview || new Date(networkReview.updatedAt) > new Date(idbReview.updatedAt)) {
                         // go ahead and store the restaurant in idb
                         return store.put(networkReview);
                     }

@@ -185,6 +185,10 @@ createRestaurantHTML = (restaurant) => {
   name.innerHTML = restaurant.name;
   li.append(name);
 
+  //TODO: Confirm placement and formatting (also may need to import favoriteButton from './favorite-button', TBD)
+  const favButton = favorite-button.favoriteButton(restaurant);
+  li.append(favButton);
+
   const neighborhood = document.createElement('p');
   neighborhood.innerHTML = restaurant.neighborhood;
   li.append(neighborhood);
