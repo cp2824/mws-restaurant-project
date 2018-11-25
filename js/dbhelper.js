@@ -266,20 +266,28 @@ class DBHelper {
     /**
      * Accesses the new endpoint for reviews (phase 3)
      * Adding this function was suggested in Alexandro Perez's walkthrough
+     * Note similarities to fetchRestaurantById
      */
     static fetchReviewsByRestaurantId(restaurant_id) {
+        // fetch only reviews for the restaurant that we are using (by id)
         return fetch(`${DBHelper.API_URL}/reviews/?restaurant_id=${restaurant_id}`).then(response => {
+            // if the response is not ok, will be caught below
+            // response.ok handles much of the error checking we would have to do manually with xhr
             if (!response.ok) return Promise.reject("Reviews couldn't be fetched from network");
+            // returns with a response if it is ok
             return response.json();
-        }).then(fetchedReviews => {
+        }).then(fetchedReviews => {//waits for the promise to be resolved, we need the callback after the resolved promise
             // if reviews could be fetched from network:
-            // TODO: store reviews on idb
-            return fetchedReviews;
-        }).catch(networkError => {
-            // if reviews couldn't be fetched from network:
-            // TODO: try to get reviews from idb
-            console.log(`${networkError}`);
-            return null; // return null to handle error, as though there are no reviews.
+            dbPromise.putReviews(fetchedReviews); // store reviews on idb
+            return fetchedReviews; // we need the callback to wait for the response
+        }).catch(networkError => { // catches any error we receive as well as issues tied to not connecting to the server
+            // if reviews couldn't be fetched from network try to get reviews from idb
+            console.log(`${networkError}, trying idb.`);
+            return dbPromise.getReviewsForRestaurant(restaurant_id).then(idbReviews => { //still try getting the data from idb
+                // if no reviews were found on idb return null
+                if (idbReviews.length < 1) return null;
+                return idbReviews; // we still return the data from idb (if it exists) when we get errors or the server is down
+            });
         });
     }
 
