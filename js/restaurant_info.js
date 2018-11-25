@@ -96,6 +96,7 @@ fetchRestaurantFromURL = (callback) => {
 
 /**
  * Create restaurant HTML and add it to the webpage
+ * uses new helper method to fetch reviews from the new endpoint (phase 3)
  */
 fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
@@ -118,8 +119,9 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
-  // fill reviews
-  fillReviewsHTML();
+  // fill reviews - reviews are no longer stored in the restaurant object
+  DBHelper.fetchReviewsByRestaurantId(restaurant.id)
+      .then(fillReviewsHTML);
 }
 
 /**
@@ -174,7 +176,9 @@ createReviewHTML = (review) => {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  // Reviews now have a createdAt and updatedAt property, but no date
+  // Date.prototype.toLocaleDateString() converts this into a human readable format
+  date.innerHTML = new Date(review.createdAt).toLocaleDateString();
   li.appendChild(date);
 
   const rating = document.createElement('p');

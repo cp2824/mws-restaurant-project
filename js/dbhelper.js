@@ -263,6 +263,26 @@ class DBHelper {
     <div class="map-text">Maps appear to be offline. Please confirm you are connected to the internet or check back later.</div>`;
     }
 
+    /**
+     * Accesses the new endpoint for reviews (phase 3)
+     * Adding this function was suggested in Alexandro Perez's walkthrough
+     */
+    static fetchReviewsByRestaurantId(restaurant_id) {
+        return fetch(`${DBHelper.API_URL}/reviews/?restaurant_id=${restaurant_id}`).then(response => {
+            if (!response.ok) return Promise.reject("Reviews couldn't be fetched from network");
+            return response.json();
+        }).then(fetchedReviews => {
+            // if reviews could be fetched from network:
+            // TODO: store reviews on idb
+            return fetchedReviews;
+        }).catch(networkError => {
+            // if reviews couldn't be fetched from network:
+            // TODO: try to get reviews from idb
+            console.log(`${networkError}`);
+            return null; // return null to handle error, as though there are no reviews.
+        });
+    }
+
 }
 
 
