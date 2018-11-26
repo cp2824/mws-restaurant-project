@@ -183,11 +183,22 @@ createRestaurantHTML = (restaurant) => {
 
   const name = document.createElement('h1');
   name.innerHTML = restaurant.name;
-  li.append(name);
+  //li.append(name);
 
   //TODO: Confirm placement and formatting (also may need to import favoriteButton from './favorite-button', TBD)
-  const favButton = favorite-button.favoriteButton(restaurant);
-  li.append(favButton);
+  //const favButton = favorite-button.favoriteButton(restaurant);
+  const flexbox = document.createElement('div');
+    flexbox.className = 'flexbox';
+    flexbox.append(name);
+  const favButton = document.createElement('div');
+    favButton.className = 'fav-btn';
+    const icon = document.createElement('span');
+    icon.href = '';
+    icon.className = 'favme dashicons dashicons-heart fa fa-heart';
+    //icon.innerHTML = '::before';
+    favButton.append(icon);
+    flexbox.append(favButton);
+  li.append(flexbox);
 
   const neighborhood = document.createElement('p');
   neighborhood.innerHTML = restaurant.neighborhood;

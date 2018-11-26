@@ -21,7 +21,7 @@ const dbPromise = {
      * can take an array of restaurants or a single restaurant
      * forceUpdate boolean will allow us to update data forcibly
      */
-    putRestaurants(restaurants) {
+    putRestaurants(restaurants, forceUpdate = false) {
         // if restaurants isn't an array then convert it into one
         if (!restaurants.push) restaurants = [restaurants];
         // this is the database we initialized above

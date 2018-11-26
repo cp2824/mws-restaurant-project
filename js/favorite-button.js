@@ -1,6 +1,8 @@
 // This file was suggested in Alexandro Perez's walkthrough.
 // Use of these calls is well documented there, but I've made sure to add notes about my understanding of the code.
 // chages tied to this code also exist in main.js and restaurant_info.js functions that call these functions
+
+/** Trying another approach
 function handleClick() {
     const restaurantId = this.dataset.id;
     const fav = this.getAttribute('aria-pressed') == 'true';
@@ -18,10 +20,12 @@ function handleClick() {
         this.setAttribute('aria-pressed', !fav);
     });
 }
+**/
 
 /**
  * Returns a button element for the specified restaurant
  */
+/**
 export default function favoriteButton(restaurant) {
     const button = document.createElement('button');
     button.innerHTML = "&#x2764;"; // this is the heart symbol in hex code
@@ -33,3 +37,26 @@ export default function favoriteButton(restaurant) {
 
     return button;
 }
+ **/
+
+/**
+ * This favorite button code was suggested here:
+ * https://codepen.io/mapk/pen/ZOQqaQ
+ */
+
+
+
+// Favorite Button - Heart
+$('.favme').click(function() {
+    $(this).toggleClass('active');
+});
+
+/* when a user clicks, toggle the 'is-animating' class */
+$(".favme").on('click touchstart', function(){
+    $(this).toggleClass('is_animating');
+});
+
+/*when the animation is over, remove the class*/
+$(".favme").on('animationend', function(){
+    $(this).toggleClass('is_animating');
+});
