@@ -189,7 +189,7 @@ nav h1 a {
   font-weight: 200;
   letter-spacing: 0;
   line-height: 1.3;
-  margin: 20px 0 10px;
+  margin: 20px 10px 10px;
   text-transform: uppercase;
 }
 #restaurants-list p {
@@ -241,7 +241,7 @@ nav h1 a {
   font-size: 20pt;
   font-weight: 200;
   letter-spacing: 0;
-  margin: 15px 0 15px;
+  margin: 15px 10px 15px;
   text-transform: uppercase;
   line-height: 1.1;
   text-align: center;
@@ -340,20 +340,18 @@ nav h1 a {
   font-size: 2vmax;
   color: #166092;
 }
-/* Default button style when not toggled */
-button.fav {
 
-}
 /* Button style when button is toggled */
-button.fav[aria-pressed=true] {
-
+button.fav-btn[aria-pressed=true] {
+  color: #DC3232;
 }
 /* Accessible and easy to spot styles for our buttons when hovered and focused */
-button.fav:hover,
-button.fav:focus {
-
+button.fav:hover {
+  opacity: 0.5;
 }
-
+button.fav:focus {
+  color: #DC3232;
+}
 /**
  * This favorite button code was suggested here:
  * https://codepen.io/mapk/pen/ZOQqaQ
@@ -366,37 +364,5 @@ button.fav:focus {
   align-items: center;
 }
 
-.fav-btn {
-  display:flex;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-}
 
-.dashicons-heart:before {
-  font-family: 'FontAwesome';
-  font-size: 14pt;
-  content: "\f004";
-  font-style: normal;
-  font-weight: normal;
-  text-decoration: inherit;
-}
 
-.favme {
-  display:block;
-  font-size: ms(2);
-  width: auto;
-  height: auto;
-  cursor: pointer;
-  box-shadow: none;
-  transition: all .2s ease;
-  color: #696969;
-  margin: 0;
-  padding: 5px;
-}
-.favme:hover {
-  opacity: 0.5;
-}
-.favme:active {
-  color: #DC3232;
-}

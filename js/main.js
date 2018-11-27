@@ -183,20 +183,16 @@ createRestaurantHTML = (restaurant) => {
 
   const name = document.createElement('h1');
   name.innerHTML = restaurant.name;
-  //li.append(name);
-
-  //TODO: Confirm placement and formatting (also may need to import favoriteButton from './favorite-button', TBD)
-  //const favButton = favorite-button.favoriteButton(restaurant);
   const flexbox = document.createElement('div');
     flexbox.className = 'flexbox';
     flexbox.append(name);
-  const favButton = document.createElement('div');
+  const favButton = document.createElement('button');
     favButton.className = 'fav-btn';
-    const icon = document.createElement('span');
-    icon.href = '';
-    icon.className = 'favme dashicons dashicons-heart fa fa-heart';
-    //icon.innerHTML = '::before';
-    favButton.append(icon);
+    favButton.innerHTML = "&#x2764;";
+    favButton.dataset.id = restaurant.id; // store restaurant id in dataset for later
+    favButton.setAttribute('aria-label', `Mark ${restaurant.name} as a favorite`);
+    favButton.setAttribute('aria-pressed', restaurant.is_favorite);
+    favButton.onclick = handleClick;
     flexbox.append(favButton);
   li.append(flexbox);
 
@@ -248,3 +244,20 @@ addMarkersToMap = (restaurants = self.restaurants) => {
   });
 } */
 
+function handleClick() {
+    const restaurantId = this.dataset.id;
+    const fav = this.getAttribute('aria-pressed') == 'true';
+    const url = `${DBHelper.API_URL}/restaurants/${restaurantId}/?is_favorite=${!fav}`;
+    const PUT = {method: 'PUT'};
+
+    // TODO: use Background Sync to sync data with API server
+    return fetch(url, PUT).then(response => {
+        if (!response.ok) return Promise.reject("We couldn't mark restaurant as favorite.");
+        return response.json();
+    }).then(updatedRestaurant => {
+        // update restaurant on idb
+        dbPromise.putRestaurants(updatedRestaurant, true);
+        // change state of toggle button
+        this.setAttribute('aria-pressed', !fav);
+    });
+}

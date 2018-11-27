@@ -58,7 +58,10 @@ Small (smaller than 640px), default*/-->
     <!-- Beginning restaurant -->
     <!-- note aria settings for improved accessibility -->
     <section id="restaurant-container" role="region" aria-label="Restaurant Info">
-      <h2 id="restaurant-name"></h2>
+      <div class="flexbox">
+        <h2 id="restaurant-name"></h2>
+        <button class="fav-btn" id="fav-btn"></button>
+      </div>
       <img id="restaurant-img">
       <p id="restaurant-cuisine"></p>
       <p id="restaurant-address"></p>
@@ -84,7 +87,6 @@ Small (smaller than 640px), default*/-->
   <script type="application/javascript" charset="utf-8" src="js/idb.js"></script>
   <!-- Database helpers -->
   <script type="application/javascript" charset="utf-8" src="js/dbpromise.js"></script>
-  <script type="application/javascript" charset="utf-8" src="js/favorite-button.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
   <!-- Main javascript file -->
   <script type="application/javascript" charset="utf-8" src="js/restaurant_info.js"></script>

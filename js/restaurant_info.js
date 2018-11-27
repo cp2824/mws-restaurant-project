@@ -101,7 +101,14 @@ fetchRestaurantFromURL = (callback) => {
 fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
-
+    const favButton = document.getElementById('fav-btn');
+    //favButton.className = 'fav-btn';
+    //favButton.setAttribute('class', 'fav-btn')
+    favButton.innerHTML = "&#x2764;";
+    favButton.dataset.id = restaurant.id; // store restaurant id in dataset for later
+    favButton.setAttribute('aria-label', `Mark ${restaurant.name} as a favorite`);
+    favButton.setAttribute('aria-pressed', restaurant.is_favorite);
+    favButton.onclick = handleClick;
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
 
@@ -216,4 +223,22 @@ getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+function handleClick() {
+    const restaurantId = this.dataset.id;
+    const fav = this.getAttribute('aria-pressed') == 'true';
+    const url = `${DBHelper.API_URL}/restaurants/${restaurantId}/?is_favorite=${!fav}`;
+    const PUT = {method: 'PUT'};
+
+    // TODO: use Background Sync to sync data with API server
+    return fetch(url, PUT).then(response => {
+        if (!response.ok) return Promise.reject("We couldn't mark restaurant as favorite.");
+        return response.json();
+    }).then(updatedRestaurant => {
+        // update restaurant on idb
+        dbPromise.putRestaurants(updatedRestaurant, true);
+        // change state of toggle button
+        this.setAttribute('aria-pressed', !fav);
+    });
 }
