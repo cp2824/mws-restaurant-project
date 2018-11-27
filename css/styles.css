@@ -364,5 +364,7 @@ button.fav:focus {
   align-items: center;
 }
 
-
+#review-form, #name, #comments{
+  width: 100%;
+}
 
