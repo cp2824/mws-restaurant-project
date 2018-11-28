@@ -26,7 +26,6 @@ var urlsToCache = [
     '/images/icons/icon-512x512.png',
     '/js/dbhelper.js',
     '/js/dbpromise.js',
-    '/js/favorite-button.js',
     '/js/idb.js',
     '/js/main.js',
     '/js/register-sw.js',
