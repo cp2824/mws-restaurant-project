@@ -3,7 +3,7 @@
 
 // Alexandro suggested scoping as 'const' for these, but they have worked well enough scoped as 'var'
 var appName = "mws-restaurant-project"
-var CACHE_NAME = appName + "-v2.0";
+var CACHE_NAME = appName + "-v3.0";
 var IMG_CACHE_NAME = appName + "images";
 var allCaches = [
     CACHE_NAME,

@@ -3,7 +3,7 @@
 // chages tied to this code also exist in dbhelper functions that call these functions
 
 const dbPromise = {
-    db: idb.open('restaurant-reviews-db', 2, function(upgradeDb) {
+    db: idb.open('restaurant-reviews-db', 3, function(upgradeDb) {
         // case statement recommended by Jake in IDB lecture
         switch (upgradeDb.oldVersion) {
             case 0:
@@ -12,6 +12,10 @@ const dbPromise = {
             case 1:
                 // creates a reviews store using restaurant_id as the index
                 upgradeDb.createObjectStore('reviews', { keyPath: 'id' })
+                    .createIndex('restaurant_id', 'restaurant_id');
+            case 2:
+                // creates a offline reviews store using restaurant_id as the index
+                upgradeDb.createObjectStore('offline-reviews', { keyPath: 'id', autoIncrement: true, })
                     .createIndex('restaurant_id', 'restaurant_id');
             /**case 2:
                 // use to sync offline favorites
@@ -37,13 +41,7 @@ const dbPromise = {
                 // returns this promise on each element of the array
                 // if we get a resataurant back from index db then it was already saved
                 return store.get(networkRestaurant.id).then(idbRestaurant => {
-                    if (forceUpdate) return store.put(networkRestaurant); //use our new boolean to force an update
-                    // if it doesn't already exist in db then restaurant is undefined
-                    // (works as a short circuit conditional statement)
-                    // or if we get newly updated restaurant information (don't update with old info)
-                    // Update here - handles ISO dates by default (rather than just timestamps)
-                    if (!idbRestaurant || new Date(networkRestaurant.updatedAt) > new Date(idbRestaurant.updatedAt)) {
-                        // go ahead and store the restaurant in idb
+                    if (!idbRestaurant || networkRestaurant.updatedAt > idbRestaurant.updatedAt) {
                         return store.put(networkRestaurant);
                     }
                 });
@@ -125,4 +123,26 @@ const dbPromise = {
             });
         });
     }**/
+
+
+    /**
+     * Save a review into idb while offline and register request to sync when online
+     * Refer to https://developers.google.com/web/updates/2015/12/background-sync
+     */
+    queueReview(review) {
+        console.log("queueing review:", review);
+        return this.db.then((db) => {
+            let store = db.transaction('offline-reviews', 'readwrite');
+            return store.objectStore('offline-reviews').put(review);
+        }).then(function () {
+                // register the background sync
+            navigator.serviceWorker.ready.then(swRegistration => {
+                console.log('background sync registered');
+                return swRegistration.sync.register('myFirstSync');
+            });
+        });
+
+    },
+
+
 };
