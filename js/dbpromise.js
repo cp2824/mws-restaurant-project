@@ -3,7 +3,7 @@
 // chages tied to this code also exist in dbhelper functions that call these functions
 
 const dbPromise = {
-    db: idb.open('restaurant-reviews-db', 3, function(upgradeDb) {
+    db: idb.open('restaurant-reviews-db', 2, function(upgradeDb) {
         // case statement recommended by Jake in IDB lecture
         switch (upgradeDb.oldVersion) {
             case 0:
@@ -13,9 +13,10 @@ const dbPromise = {
                 // creates a reviews store using restaurant_id as the index
                 upgradeDb.createObjectStore('reviews', { keyPath: 'id' })
                     .createIndex('restaurant_id', 'restaurant_id');
-            case 2:
+            /**case 2:
                 // use to sync offline favorites
                 upgradeDb.createObjectStore('offline-favorites', { keyPath: 'id' });
+             **/
         }
     }),
 
@@ -115,7 +116,7 @@ const dbPromise = {
      * Sets the favorite value for a specific restaurant
      * by default sets to true
      */
-    putFavorite(restaurant_id, isfavorite = true) {
+/**    putFavorite(restaurant_id, isfavorite = true) {
         return this.db.then(db => {
             // specify a read/write transaction for reviews
             const store = db.transaction('offline-favorites', 'readwrite').objectStore('offline-favorites').index('restaurant_id');
@@ -123,5 +124,5 @@ const dbPromise = {
                 return store.put(isfavorite);
             });
         });
-    }
+    }**/
 };

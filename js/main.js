@@ -250,7 +250,7 @@ function handleClick() {
     const url = `${DBHelper.API_URL}/restaurants/${restaurantId}/?is_favorite=${!fav}`;
     const PUT = {method: 'PUT'};
 
-    // TODO: use Background Sync to sync data with API server
+ /**   // TODO: use Background Sync to sync data with API server
     if (!window.SyncManager || !navigator.serviceWorker) {
         return fetch(url, PUT).then(response => {
             if (!response.ok) return Promise.reject("We couldn't mark restaurant as favorite.");
@@ -268,5 +268,15 @@ function handleClick() {
         dbPromise.putFavorite(restaurantId, !fav)
         // change state of toggle button
         this.setAttribute('aria-pressed', !fav);
-    }
+    }**/
+    return fetch(url, PUT).then(response => {
+        if (!response.ok) return Promise.reject("We couldn't mark restaurant as favorite.");
+        return response.json();
+    }).then(updatedRestaurant => {
+        // update restaurant on idb
+        // TODO: Update data in idb, to reflect the restaurant as favorite or not. You need to update two properties isfavorite and updatedAt. For updatedAt you can use new Date().toISOString.
+        dbPromise.putRestaurants(updatedRestaurant, true);
+        // change state of toggle button
+        this.setAttribute('aria-pressed', !fav);
+    });
 }
