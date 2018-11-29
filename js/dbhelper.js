@@ -291,6 +291,44 @@ class DBHelper {
         });
     }
 
+    /**
+     * This function posts reviews from the offline database to the sails server
+     */
+    static postReviewsOnline() {
+        console.log("Posting Offline Reviews");
+        const reviews = dbPromise.getOfflineReviewsForRestaurants()//new retrieval function;
+        console.log(reviews);
+        //console.log(reviews.[[PromiseValue]]);
+        //[[PromiseValue]]
+        //if (!reviews) return;
+
+        //test looping over all reviews
+        //Promise.all(reviews.map(offlineReview => {
+        promiseB = reviews.then(function(offlineReview) {
+            const url = `${DBHelper.API_URL}/reviews/`;
+            const POST = {
+                method: 'POST',
+                body: JSON.stringify(offlineReview)
+            };
+            console.log(POST);
+            return fetch(url, POST).then(response => {
+                console.log(response);
+                if (!response.ok) return Promise.reject("We couldn't post reviews to server.");
+                return response.json();
+            }).then(newNetworkReview => {
+                // save new review on idb
+                dbPromise.putReviews(newNetworkReview);
+                // clear the offline reviews
+                dbPromise.clearOfflineReviewsForRestaurants();
+            });
+        //})).then(function () {
+
+            return true;
+        })
+
+
+    }
+
 }
 
 

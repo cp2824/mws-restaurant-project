@@ -341,21 +341,27 @@ function handleSubmit(e) {
         method: 'POST',
         body: JSON.stringify(review)
     };
-
-    // save new review on idb
-    dbPromise.putReviews(review);
+    console.log(POST);
+    /**
     // post new review on page
     const reviewList = document.getElementById('reviews-list');
-    const review = createReviewHTML(review);
-    reviewList.appendChild(review);
+    const reviewEl = createReviewHTML(review);
+    reviewList.appendChild(reviewEl);
+    console.log("Review Posted");
     // clear form
     clearForm();
+    console.log("Form Cleared");
+    //dbPromise.putReviews(POST);
+    //console.log("Review in local db");
+    dbPromise.queueReview(review);
+    return false;
+     **/
     // TODO: use Background Sync to sync data with API server
     return fetch(url, POST).then(response => {
         if (!response.ok) return Promise.reject("We couldn't post review to server.");
-        dbPromise.queueReview(review);
+        //dbPromise.queueReview(review);
         return response.json();
-    }).then(newNetworkReview => {/**
+    }).then(newNetworkReview => {
         // save new review on idb
         dbPromise.putReviews(newNetworkReview);
         // post new review on page
@@ -363,11 +369,25 @@ function handleSubmit(e) {
         const review = createReviewHTML(newNetworkReview);
         reviewList.appendChild(review);
         // clear form
-        clearForm();**/
+        clearForm();
+        // need to test our new function to post offline reviews
+        DBHelper.postReviewsOnline();
+        return false;
+    }).catch(networkError => {
+        console.log('${networkError}, queueing review.');
+        const review = validateAndGetData();
+        if (!review) return;
+        dbPromise.queueReview(review);
+        dbPromise.putReviews(review);
+        // post new review on page
+        const reviewList = document.getElementById('reviews-list');
+        const reviewHTML = createReviewHTML(review);
+        reviewList.appendChild(reviewHTML);
+        // clear form
+        clearForm();
+        return false;
     });
-
 }
-
 
 /**
  * The following functions are used to generate and process entries into our review form

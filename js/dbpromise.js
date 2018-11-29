@@ -80,6 +80,7 @@ const dbPromise = {
     putReviews(reviews) {
         // this converts a single review into an array of reviews
         if (!reviews.push) reviews = [reviews];
+        console.log("Putting review onto DB:", reviews);
         return this.db.then(db => {
             // specify a read/write transaction for reviews
             const store = db.transaction('reviews', 'readwrite').objectStore('reviews');
@@ -94,6 +95,7 @@ const dbPromise = {
                     // Update here - handles ISO dates by default (rather than just timestamps)
                     if (!idbReview || new Date(networkReview.updatedAt) > new Date(idbReview.updatedAt)) {
                         // go ahead and store the restaurant in idb
+                        //console.log("Should be added to db:", networkReview);
                         return store.put(networkReview);
                     }
                 });
@@ -114,11 +116,6 @@ const dbPromise = {
             const storeIndex = db.transaction('reviews').objectStore('reviews').index('restaurant_id');
             //const storeIndex2 = db.transaction('offline-reviews').objectStore('offline-reviews').index('restaurant_id');
             // if there is an id (convert a string to number). We return a restaurant by that id.
-            //reviews = storeIndex.getAll(Number(id));
-            //reviews2 = storeIndex2.getAll(Number(id));
-            //console.log("Reviews2:", reviews2);
-            //console.log("Reviews:", reviews);
-            //return reviews;
             return storeIndex.getAll(Number(id));
         });
     },
@@ -156,5 +153,23 @@ const dbPromise = {
 
     },
 
-
+    /**
+     * Get all offline reviews.
+     */
+    getOfflineReviewsForRestaurants() {
+        return this.db.then(db => {
+            const storeIndex = db.transaction('offline-reviews').objectStore('offline-reviews').index('restaurant_id');
+            return storeIndex.getAll();
+        });
+    },
+    /**
+     * Clear all offline reviews.
+     */
+    clearOfflineReviewsForRestaurants() {
+        return this.db.then(db => {
+            const store = db.transaction('offline-reviews', 'readwrite').objectStore('offline-reviews');
+            //console.log("clear offline reviews?");
+            return store.clear();
+        });
+    }
 };

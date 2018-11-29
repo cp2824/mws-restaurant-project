@@ -121,3 +121,13 @@ function serveImage(request) {
         });
     });
 }
+
+/**
+ * This helps enable background sync
+ * see: https://developers.google.com/web/updates/2015/12/background-sync
+ */
+self.addEventListener('sync', function(event) {
+    if (event.tag == 'myFirstSync') {
+        event.waitUntil(test = DBHelper.postReviewsOnline());
+    }
+});
