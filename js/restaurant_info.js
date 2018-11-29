@@ -6,6 +6,8 @@ var newMap;
  */
 document.addEventListener('DOMContentLoaded', (event) => {
         initMap();
+        // confirm that the offline reviews are online if possible
+        DBHelper.postReviewsOnline();
 });
 
 /**
@@ -251,7 +253,6 @@ function handleClick() {
     const url = `${DBHelper.API_URL}/restaurants/${restaurantId}/?is_favorite=${!fav}`;
     const PUT = {method: 'PUT'};
 
-    // TODO: use Background Sync to sync data with API server
     return fetch(url, PUT).then(response => {
         if (!response.ok) return Promise.reject("We couldn't mark restaurant as favorite.");
         return response.json();
@@ -355,22 +356,8 @@ function handleSubmit(e) {
         method: 'POST',
         body: JSON.stringify(review)
     };
-    console.log(POST);
-    /**
-    // post new review on page
-    const reviewList = document.getElementById('reviews-list');
-    const reviewEl = createReviewHTML(review);
-    reviewList.appendChild(reviewEl);
-    console.log("Review Posted");
-    // clear form
-    clearForm();
-    console.log("Form Cleared");
-    //dbPromise.putReviews(POST);
-    //console.log("Review in local db");
-    dbPromise.queueReview(review);
-    return false;
-     **/
-    // TODO: use Background Sync to sync data with API server
+    //console.log(POST);
+
     return fetch(url, POST).then(response => {
         if (!response.ok) return Promise.reject("We couldn't post review to server.");
         //dbPromise.queueReview(review);
@@ -388,11 +375,11 @@ function handleSubmit(e) {
         DBHelper.postReviewsOnline();
         return false;
     }).catch(networkError => {
-        console.log('${networkError}, queueing review.');
+        //console.log('${networkError}, queueing review.');
         const review = validateAndGetData();
         if (!review) return;
+        // save the review to an offline db and prompt the sw to load
         dbPromise.queueReview(review);
-        //dbPromise.putReviews(review);
         // post new review on page
         const reviewList = document.getElementById('reviews-list');
         const reviewHTML = createReviewHTML(review);
@@ -411,10 +398,12 @@ function handleSubmit(e) {
  * Returns a form element for posting new reviews.
  */
 function reviewForm(restaurantId) {
+    // Creates the review form
     const form = document.createElement('form');
     form.id = "review-form";
     form.dataset.restaurantId = restaurantId;
 
+    // Name text field for users to enter their name
     let p = document.createElement('p');
     const name = document.createElement('input');
     name.id = "name"
@@ -424,6 +413,7 @@ function reviewForm(restaurantId) {
     p.appendChild(name);
     form.appendChild(p);
 
+    // Rating dropdown for users to enter their score
     p = document.createElement('p');
     const selectLabel = document.createElement('label');
     selectLabel.setAttribute('for', 'rating');
@@ -431,6 +421,7 @@ function reviewForm(restaurantId) {
     p.appendChild(selectLabel);
     const select = document.createElement('select');
     select.id = "rating";
+    select.setAttribute('aria-label', 'Name');
     select.name = "rating";
     select.classList.add('rating');
     ["--", 1,2,3,4,5].forEach(number => {
@@ -443,6 +434,7 @@ function reviewForm(restaurantId) {
     p.appendChild(select);
     form.appendChild(p);
 
+    // Comment textarea for users to enter their review text
     p = document.createElement('p');
     const textarea = document.createElement('textarea');
     textarea.id = "comments";
@@ -452,6 +444,7 @@ function reviewForm(restaurantId) {
     p.appendChild(textarea);
     form.appendChild(p);
 
+    // Submit button for users to submit their review
     p = document.createElement('p');
     const addButton = document.createElement('button');
     addButton.setAttribute('type', 'submit');

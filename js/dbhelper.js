@@ -293,6 +293,7 @@ class DBHelper {
 
     /**
      * Access offline reviews for display in restaurant info page
+     * This is similar to fetchReviewsByRestaurantId above
      */
     static fetchOfflineReviewsByRestaurantId(restaurant_id) {
         return dbPromise.getOfflineReviewsForRestaurant(restaurant_id).then(idbReviews => {
@@ -305,35 +306,29 @@ class DBHelper {
      * This function posts reviews from the offline database to the sails server
      */
     static postReviewsOnline() {
-        console.log("Posting Offline Reviews");
+        //console.log("Posting Offline Reviews");
         const reviews = dbPromise.getOfflineReviewsForAllRestaurants();//new retrieval function;
-        console.log(reviews);
-        //console.log(reviews.[[PromiseValue]]);
-        //[[PromiseValue]]
-        //if (!reviews) return;
+        //console.log(reviews);
 
-        //test looping over all reviews
-        //Promise.all(reviews.map(offlineReview => {
-        promiseB = reviews.then(function(offlineReview) {
+        // loop over offline reviews and store them to the Sails Server
+        return reviews.then(function(offlineReview) {
             const url = `${DBHelper.API_URL}/reviews/`;
             const POST = {
                 method: 'POST',
                 body: JSON.stringify(offlineReview)
             };
-            console.log(POST);
+            //console.log(POST);
             return fetch(url, POST).then(response => {
-                console.log(response);
+                //console.log(response);
                 if (!response.ok) return Promise.reject("We couldn't post reviews to server.");
                 return response.json();
             }).then(newNetworkReview => {
-                // save new review on idb
-                dbPromise.putReviews(newNetworkReview);
-                // clear the offline reviews
-                dbPromise.clearOfflineReviewsForRestaurants();
+                // save new review on normal review idb
+                return dbPromise.putReviews(newNetworkReview);
+            }).then(response => {
+                return dbPromise.clearOfflineReviewsForRestaurants();
             });
-        //})).then(function () {
 
-            return true;
         })
 
 

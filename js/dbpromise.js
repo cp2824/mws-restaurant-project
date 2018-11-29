@@ -80,7 +80,7 @@ const dbPromise = {
     putReviews(reviews) {
         // this converts a single review into an array of reviews
         if (!reviews.push) reviews = [reviews];
-        console.log("Putting review onto DB:", reviews);
+        //console.log("Putting review onto DB:", reviews);
         return this.db.then(db => {
             // specify a read/write transaction for reviews
             const store = db.transaction('reviews', 'readwrite').objectStore('reviews');
@@ -140,25 +140,25 @@ const dbPromise = {
      */
     queueReview(review) {
         //dbPromise.putReviews(review);
-        console.log("queueing review:", review);
+        //console.log("queueing review:", review);
         return this.db.then((db) => {
             let store = db.transaction('offline-reviews', 'readwrite');
             return store.objectStore('offline-reviews').put(review);
         }).then(function () {
                 // register the background sync
             navigator.serviceWorker.ready.then(swRegistration => {
-                console.log('Attempting background sync registration:');
-                doit = swRegistration.sync.register('myFirstSync');
-                console.log(doit);
-                //return swRegistration.sync.register('myFirstSync');
-                return doit
+                //console.log('Attempting background sync registration:');
+                //doit = swRegistration.sync.register('myFirstSync');
+                //console.log(doit);
+                return swRegistration.sync.register('myFirstSync');
+                //return doit
             });
         });
 
     },
 
     /**
-     * Get all offline reviews for a specific restaurant, by its id, using promises.
+     * Get all offline reviews for a specific restaurant, by its id
      */
     getOfflineReviewsForRestaurant(id) {
         return this.db.then(db => {

@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
         initMap(); // added
         fetchNeighborhoods();
         fetchCuisines();
+        // confirm that the offline reviews are online if possible
+        DBHelper.postReviewsOnline();
 });
 
 /**

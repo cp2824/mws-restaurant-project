@@ -22,7 +22,7 @@ In a terminal, check the version of Python you have: `python -V`. If you have Py
 4. Write code to implement the updates to get this site on its way to being a mobile-ready website.
 
 To run this project on your local machine, you need node.js installed.
-You also need to clone and have Sails Server for Phase 2 running on localhost:1337
+You also need to clone and have Sails Server for Phase 3 running on localhost:1337
 After cloning project, npm install or yarn install
 
 ## Leaflet.js and Mapbox:
