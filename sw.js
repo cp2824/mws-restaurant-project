@@ -1,5 +1,6 @@
 // Code here for service worker largely comes from https://developers.google.com/web/fundamentals/primers/service-workers/
 // I also used suggestions from Alexandro's walkthrough
+importScripts('/js/idb.js', '/js/dbpromise.js', '/js/dbhelper.js');       /* imports scripts */
 
 // Alexandro suggested scoping as 'const' for these, but they have worked well enough scoped as 'var'
 var appName = "mws-restaurant-project"

@@ -147,8 +147,11 @@ const dbPromise = {
         }).then(function () {
                 // register the background sync
             navigator.serviceWorker.ready.then(swRegistration => {
-                console.log('background sync registered');
-                return swRegistration.sync.register('myFirstSync');
+                console.log('Attempting background sync registration:');
+                doit = swRegistration.sync.register('myFirstSync');
+                console.log(doit);
+                //return swRegistration.sync.register('myFirstSync');
+                return doit
             });
         });
 
