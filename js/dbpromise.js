@@ -139,6 +139,7 @@ const dbPromise = {
      * Refer to https://developers.google.com/web/updates/2015/12/background-sync
      */
     queueReview(review) {
+        //dbPromise.putReviews(review);
         console.log("queueing review:", review);
         return this.db.then((db) => {
             let store = db.transaction('offline-reviews', 'readwrite');
@@ -154,9 +155,19 @@ const dbPromise = {
     },
 
     /**
+     * Get all offline reviews for a specific restaurant, by its id, using promises.
+     */
+    getOfflineReviewsForRestaurant(id) {
+        return this.db.then(db => {
+            const storeIndex = db.transaction('offline-reviews').objectStore('offline-reviews').index('restaurant_id');
+            return storeIndex.getAll(Number(id));
+        });
+    },
+
+    /**
      * Get all offline reviews.
      */
-    getOfflineReviewsForRestaurants() {
+    getOfflineReviewsForAllRestaurants() {
         return this.db.then(db => {
             const storeIndex = db.transaction('offline-reviews').objectStore('offline-reviews').index('restaurant_id');
             return storeIndex.getAll();

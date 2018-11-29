@@ -292,11 +292,21 @@ class DBHelper {
     }
 
     /**
+     * Access offline reviews for display in restaurant info page
+     */
+    static fetchOfflineReviewsByRestaurantId(restaurant_id) {
+        return dbPromise.getOfflineReviewsForRestaurant(restaurant_id).then(idbReviews => {
+            if (idbReviews.length < 1) return null;
+            return idbReviews; // we still return the data from idb (if it exists) when we get errors or the server is down
+        });
+    }
+
+    /**
      * This function posts reviews from the offline database to the sails server
      */
     static postReviewsOnline() {
         console.log("Posting Offline Reviews");
-        const reviews = dbPromise.getOfflineReviewsForRestaurants()//new retrieval function;
+        const reviews = dbPromise.getOfflineReviewsForAllRestaurants();//new retrieval function;
         console.log(reviews);
         //console.log(reviews.[[PromiseValue]]);
         //[[PromiseValue]]

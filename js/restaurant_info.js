@@ -129,6 +129,9 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   // fill reviews - reviews are no longer stored in the restaurant object
   DBHelper.fetchReviewsByRestaurantId(restaurant.id)
       .then(fillReviewsHTML);
+  DBHelper.fetchOfflineReviewsByRestaurantId(restaurant.id)
+      .then(appendReviewsHTML);
+
 }
 
 /**
@@ -170,6 +173,7 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
             ul.appendChild(createReviewHTML(review));
         });
         container.appendChild(ul);
+
     }
 
     const h3 = document.createElement('h3');
@@ -178,7 +182,17 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
     const id = getParameterByName('id');
     container.appendChild(reviewForm(id));
 }
-
+/**
+ * Add all offline reviews to the webpage.
+ */
+appendReviewsHTML = (reviews = self.restaurant.reviews) => {
+    if (reviews) {
+        const ul = document.getElementById('reviews-list');
+        reviews.forEach(review => {
+            ul.appendChild(createReviewHTML(review));
+        });
+    }
+}
 /**
  * Create review HTML and add it to the webpage.
  */
@@ -378,7 +392,7 @@ function handleSubmit(e) {
         const review = validateAndGetData();
         if (!review) return;
         dbPromise.queueReview(review);
-        dbPromise.putReviews(review);
+        //dbPromise.putReviews(review);
         // post new review on page
         const reviewList = document.getElementById('reviews-list');
         const reviewHTML = createReviewHTML(review);
