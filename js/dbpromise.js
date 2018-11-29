@@ -112,7 +112,13 @@ const dbPromise = {
         return this.db.then(db => {
             // we are reading (that's the default), not read/write
             const storeIndex = db.transaction('reviews').objectStore('reviews').index('restaurant_id');
+            //const storeIndex2 = db.transaction('offline-reviews').objectStore('offline-reviews').index('restaurant_id');
             // if there is an id (convert a string to number). We return a restaurant by that id.
+            //reviews = storeIndex.getAll(Number(id));
+            //reviews2 = storeIndex2.getAll(Number(id));
+            //console.log("Reviews2:", reviews2);
+            //console.log("Reviews:", reviews);
+            //return reviews;
             return storeIndex.getAll(Number(id));
         });
     },
